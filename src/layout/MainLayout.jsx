@@ -1,26 +1,14 @@
-import { Outlet, Link } from "react-router-dom";
-import { AppBar, Toolbar, Typography, Button, Box, Stack } from "@mui/material";
+import { Outlet } from "react-router-dom";
+import { Box } from "@mui/material";
+import AppHeader from "./components/AppHeader";
 
 export default function MainLayout() {
     return (
-        <Box sx={{ minHeight: "100vh", backgroundColor: "background.default" }}>
-            {/* 🔝 Top AppBar */}
-            <AppBar position="sticky" elevation={1}>
-                <Toolbar>
-                    <Typography variant="h6" sx={{ flexGrow: 1 }}>
-                        My MUI App
-                    </Typography>
+        <Box sx={{ minHeight: "100dvh", backgroundColor: "background.default" }}>
 
-                    <Stack direction="row" spacing={2}>
-                        <Button color="inherit" component={Link} to="/">Home</Button>
-                        <Button color="inherit" component={Link} to="/about">About</Button>
-                        <Button color="inherit" component={Link} to="/contact">Contact</Button>
-                    </Stack>
-                </Toolbar>
-            </AppBar>
+            <AppHeader />
 
-            {/* 🔽 Pages Render Here */}
-            <Box sx={{ p: 3 }}>
+            <Box sx={{ px: 13 }}>
                 <Outlet />
             </Box>
         </Box>
