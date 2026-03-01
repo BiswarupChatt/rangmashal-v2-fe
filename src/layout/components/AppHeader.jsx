@@ -2,6 +2,7 @@ import { useState } from "react";
 import {
     Box,
     Button,
+    Collapse,
     Divider,
     Drawer,
     IconButton,
@@ -17,6 +18,7 @@ import {
     Facebook,
     HomeRounded,
     KeyboardArrowDown,
+    KeyboardArrowRight,
     Menu,
     PhoneInTalk,
     Twitter,
@@ -27,17 +29,167 @@ import { Link } from "react-router-dom";
 
 export default function AppHeader() {
     const [mobileOpen, setMobileOpen] = useState(false);
+    const [openSubmenus, setOpenSubmenus] = useState({});
     const handleDrawerToggle = () => setMobileOpen((prev) => !prev);
+    const toggleSubmenu = (key) => setOpenSubmenus((prev) => ({ ...prev, [key]: !prev[key] }));
 
     const navItems = [
         { label: "Home", to: "/" },
-        { label: "Demos", to: "/demos", menu: true },
-        { label: "Causes", to: "/causes", menu: true },
-        { label: "Events", to: "/events", menu: true },
-        { label: "Features", to: "/features", menu: true },
-        { label: "Pages", to: "/pages", menu: true },
+        {
+            label: "Demos",
+            to: "/demos",
+            submenu: [
+                { label: "Home Classic", to: "/" },
+                { label: "About Us", to: "/about" },
+                { label: "Contact", to: "/contact" },
+            ],
+        },
+        {
+            label: "Causes",
+            to: "/causes",
+            submenu: [
+                { label: "Medical Support", to: "/causes/medical-support" },
+                { label: "Food Donation", to: "/causes/food-donation" },
+            ],
+        },
+        {
+            label: "Pages",
+            to: "/pages",
+            submenu: [
+                { label: "About Us", to: "/about" },
+                { label: "Contact", to: "/contact" },
+                {
+                    label: "More Pages",
+                    submenu: [
+                        { label: "FAQ", to: "/pages/faq" },
+                        { label: "Team", to: "/pages/team" },
+                    ],
+                },
+            ],
+        },
         { label: "About Us", to: "/about" },
     ];
+
+    const hasSubmenu = (item) => Array.isArray(item?.submenu) && item.submenu.length > 0;
+
+    const desktopNavButtonSx = (depth) => ({
+        fontWeight: 500,
+        textTransform: "none",
+        color: "text.primary",
+        px: depth === 0 ? 2 : 1.75,
+        py: depth === 0 ? 1 : 0.8,
+        minWidth: depth === 0 ? "auto" : "100%",
+        borderRadius: depth === 0 ? 0 : 1,
+        justifyContent: depth === 0 ? "center" : "space-between",
+        "&:hover": {
+            color: "primary.main",
+            bgcolor: depth === 0 ? "transparent" : (t) => alpha(t.palette.primary.main, 0.08),
+        },
+    });
+
+    const renderDesktopNavItems = (items, depth = 0) =>
+        items.map((item, index) => {
+            const submenu = hasSubmenu(item);
+            const key = `${item.label}-${depth}-${index}`;
+            const arrowIcon = submenu ? (depth === 0 ? <KeyboardArrowDown /> : <KeyboardArrowRight />) : null;
+            const menuPositionSx =
+                depth === 0
+                    ? {
+                          top: "100%",
+                          left: 0,
+                          transform: "translateY(8px)",
+                      }
+                    : {
+                          top: 0,
+                          left: "100%",
+                          transform: "translateX(8px)",
+                      };
+
+            return (
+                <Box
+                    key={key}
+                    sx={{
+                        position: "relative",
+                        "&:hover > .submenu-panel": {
+                            opacity: 1,
+                            visibility: "visible",
+                            pointerEvents: "auto",
+                            transform: "translate(0, 0)",
+                        },
+                    }}
+                >
+                    <Button
+                        component={item.to ? Link : "button"}
+                        to={item.to}
+                        endIcon={arrowIcon}
+                        sx={desktopNavButtonSx(depth)}
+                    >
+                        {item.label}
+                    </Button>
+
+                    {submenu && (
+                        <Box
+                            className="submenu-panel"
+                            sx={{
+                                position: "absolute",
+                                minWidth: 220,
+                                bgcolor: "#fff",
+                                borderRadius: 1.5,
+                                py: 1,
+                                boxShadow: "0 16px 32px rgba(0,0,0,0.12)",
+                                border: "1px solid",
+                                borderColor: "divider",
+                                zIndex: 30 + depth,
+                                opacity: 0,
+                                visibility: "hidden",
+                                pointerEvents: "none",
+                                transition: "all 160ms ease",
+                                ...menuPositionSx,
+                            }}
+                        >
+                            {renderDesktopNavItems(item.submenu, depth + 1)}
+                        </Box>
+                    )}
+                </Box>
+            );
+        });
+
+    const renderMobileNavItems = (items, depth = 0, parentKey = "root") =>
+        items.map((item, index) => {
+            const submenu = hasSubmenu(item);
+            const key = `${parentKey}-${index}-${item.label}`;
+            const isOpen = !!openSubmenus[key];
+
+            return (
+                <Box key={key}>
+                    <ListItemButton
+                        component={!submenu && item.to ? Link : "button"}
+                        to={!submenu ? item.to : undefined}
+                        onClick={() => {
+                            if (submenu) {
+                                toggleSubmenu(key);
+                                return;
+                            }
+                            handleDrawerToggle();
+                        }}
+                        sx={{
+                            borderRadius: 2,
+                            my: 0.5,
+                            pl: 2 + depth * 2,
+                        }}
+                    >
+                        <ListItemText primary={item.label} />
+                        {submenu ? (isOpen ? <KeyboardArrowDown fontSize="small" /> : <KeyboardArrowRight fontSize="small" />) : null}
+                    </ListItemButton>
+
+                    {submenu && (
+                        <Collapse in={isOpen} timeout="auto" unmountOnExit>
+                            <List disablePadding>{renderMobileNavItems(item.submenu, depth + 1, key)}</List>
+                        </Collapse>
+                    )}
+                </Box>
+            );
+        });
 
     const drawer = (
         <Box sx={{ width: 280 }}>
@@ -50,19 +202,7 @@ export default function AppHeader() {
                 </IconButton>
             </Box>
             <Divider />
-            <List sx={{ px: 1 }}>
-                {navItems.map((item) => (
-                    <ListItemButton
-                        key={item.label}
-                        component={Link}
-                        to={item.to}
-                        onClick={handleDrawerToggle}
-                        sx={{ borderRadius: 2, my: 0.5 }}
-                    >
-                        <ListItemText primary={item.label} />
-                    </ListItemButton>
-                ))}
-            </List>
+            <List sx={{ px: 1 }}>{renderMobileNavItems(navItems)}</List>
             <Box sx={{ p: 2 }}>
                 <Button fullWidth variant="contained" sx={{ borderRadius: 999 }}>
                     Donate Now
@@ -160,7 +300,7 @@ export default function AppHeader() {
                     sx={{
                         bgcolor: "#fff",
                         px: 3,
-                        py:2,
+                        py: 2,
                         boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
                     }}
                 >
@@ -205,22 +345,7 @@ export default function AppHeader() {
                                 alignItems: "center",
                             }}
                         >
-                            {navItems.map((item) => (
-                                <Button
-                                    key={item.label}
-                                    component={Link}
-                                    to={item.to}
-                                    endIcon={item.menu ? <KeyboardArrowDown /> : null}
-                                    sx={{
-                                        fontWeight: 500,
-                                        textTransform: "none",
-                                        color: "text.primary",
-                                        "&:hover": { color: "primary.main", bgcolor: "transparent" },
-                                    }}
-                                >
-                                    {item.label}
-                                </Button>
-                            ))}
+                            {renderDesktopNavItems(navItems)}
                         </Box>
 
                         {/* Donate Button */}
