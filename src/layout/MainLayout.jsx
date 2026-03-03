@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { Box, Fab, Zoom } from "@mui/material";
 import { KeyboardArrowUp } from "@mui/icons-material";
-import AppHeader from "./components/AppHeader";
+import AppNavigation from "./components/AppNavigation";
 
 export default function MainLayout() {
     const [showScrollTop, setShowScrollTop] = useState(false);
@@ -21,7 +21,7 @@ export default function MainLayout() {
     return (
         <Box sx={{ minHeight: "100dvh", backgroundColor: "background.default" }}>
 
-            <AppHeader />
+            <AppNavigation />
 
             <Box
                 sx={{
