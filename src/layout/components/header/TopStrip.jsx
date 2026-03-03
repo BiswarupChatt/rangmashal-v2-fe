@@ -37,7 +37,7 @@ export default function TopStrip({ onMenuClick }) {
                         color: "primary.contrastText",
                     }}
                 >
-                    <Box sx={{ display: { xs: "flex", md: "none" }, alignItems: "center", gap: 0.8 }}>
+                    <Box sx={{ display: { xs: "flex", md: "none" }, width: "100%", justifyContent: "space-between", alignItems: "center", gap: 0.8 }}>
                         <IconButton
                             onClick={onMenuClick}
                             aria-label="Open menu"
