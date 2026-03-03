@@ -26,6 +26,7 @@ export default function MainLayout() {
             <Box
                 sx={{
                     px: { xs: 2, sm: 3, md: 6, lg: 10 },
+                    pb: { xs: 10, md: 0 },
                 }}
             >
                 <Outlet />
@@ -39,7 +40,7 @@ export default function MainLayout() {
                     sx={{
                         position: "fixed",
                         right: { xs: 16, md: 24 },
-                        bottom: { xs: 16, md: 24 },
+                        bottom: { xs: 86, md: 24 },
                         zIndex: (theme) => theme.zIndex.tooltip,
                     }}
                 >

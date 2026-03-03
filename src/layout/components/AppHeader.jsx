@@ -424,8 +424,6 @@ export default function AppHeader() {
                         {/* Donate Button */}
                         <Button
                             variant="contained"
-                            component={Link}
-                            to="/donate"
                             sx={{
                                 display: { xs: "none", sm: "inline-flex" },
                                 borderRadius: 999,
