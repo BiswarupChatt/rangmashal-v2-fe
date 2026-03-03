@@ -1,6 +1,8 @@
 import { useState } from "react";
 import {
     Box,
+    BottomNavigation,
+    BottomNavigationAction,
     Button,
     Collapse,
     Divider,
@@ -9,13 +11,18 @@ import {
     List,
     ListItemButton,
     ListItemText,
+    Paper,
     Typography,
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import {
     Close,
+    ContactMailOutlined,
     EmailOutlined,
     Facebook,
+    FavoriteRounded,
+    HomeRounded,
+    InfoOutlined,
     KeyboardArrowDown,
     KeyboardArrowRight,
     Menu,
@@ -24,13 +31,27 @@ import {
     YouTube,
     VolunteerActivism,
 } from "@mui/icons-material";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 export default function AppHeader() {
     const [mobileOpen, setMobileOpen] = useState(false);
     const [openSubmenus, setOpenSubmenus] = useState({});
+    const location = useLocation();
+    const navigate = useNavigate();
     const handleDrawerToggle = () => setMobileOpen((prev) => !prev);
     const toggleSubmenu = (key) => setOpenSubmenus((prev) => ({ ...prev, [key]: !prev[key] }));
+
+    const mobileBottomNavItems = [
+        { label: "Home", to: "/", icon: <HomeRounded fontSize="small" /> },
+        { label: "About", to: "/about", icon: <InfoOutlined fontSize="small" /> },
+        { label: "Contact", to: "/contact", icon: <ContactMailOutlined fontSize="small" /> },
+        { label: "Donate", to: "/donate", icon: <FavoriteRounded fontSize="small" /> },
+    ];
+
+    const mobileBottomNavValue =
+        mobileBottomNavItems.find((item) =>
+            item.to === "/" ? location.pathname === "/" : location.pathname.startsWith(item.to)
+        )?.to ?? "/";
 
     const navItems = [
         { label: "Home", to: "/" },
@@ -204,7 +225,14 @@ export default function AppHeader() {
             <Divider />
             <List sx={{ px: 1 }}>{renderMobileNavItems(navItems)}</List>
             <Box sx={{ p: 2 }}>
-                <Button fullWidth variant="contained" sx={{ borderRadius: 999 }}>
+                <Button
+                    fullWidth
+                    variant="contained"
+                    component={Link}
+                    to="/donate"
+                    onClick={handleDrawerToggle}
+                    sx={{ borderRadius: 999 }}
+                >
                     Donate Now
                 </Button>
             </Box>
@@ -240,6 +268,43 @@ export default function AppHeader() {
                             color: "primary.contrastText",
                         }}
                     >
+                        <Box
+                            sx={{
+                                display: { xs: "flex", md: "none" },
+                                alignItems: "center",
+                                gap: 0.8,
+                            }}
+                        >
+                            <IconButton
+                                onClick={handleDrawerToggle}
+                                aria-label="Open menu"
+                                size="small"
+                                sx={{
+                                    width: 30,
+                                    height: 30,
+                                    color: "primary.contrastText",
+                                    bgcolor: (t) => alpha(t.palette.common.white, 0.2),
+                                }}
+                            >
+                                <Menu fontSize="small" />
+                            </IconButton>
+                            <Box
+                                sx={{
+                                    width: 28,
+                                    height: 28,
+                                    borderRadius: "50%",
+                                    bgcolor: alpha("#ffffff", 0.22),
+                                    display: "grid",
+                                    placeItems: "center",
+                                }}
+                            >
+                                <VolunteerActivism sx={{ color: "#fff", fontSize: 16 }} />
+                            </Box>
+                            <Typography variant="subtitle2" fontWeight={700} letterSpacing={0.2}>
+                                Lifeline
+                            </Typography>
+                        </Box>
+
                         <Box
                             sx={{
                                 display: { xs: "none", md: "flex" },
@@ -292,6 +357,7 @@ export default function AppHeader() {
             {/* Floating navbar */}
             <Box
                 sx={{
+                    display: { xs: "none", md: "block" },
                     position: "absolute",
                     left: "50%",
                     transform: "translateX(-50%)",
@@ -358,6 +424,8 @@ export default function AppHeader() {
                         {/* Donate Button */}
                         <Button
                             variant="contained"
+                            component={Link}
+                            to="/donate"
                             sx={{
                                 display: { xs: "none", sm: "inline-flex" },
                                 borderRadius: 999,
@@ -374,6 +442,47 @@ export default function AppHeader() {
                     </Box>
                 </Box>
             </Box>
+
+            <Paper
+                elevation={10}
+                sx={{
+                    display: { xs: "block", md: "none" },
+                    position: "fixed",
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    zIndex: (theme) => theme.zIndex.appBar + 2,
+                    borderTop: "1px solid",
+                    borderColor: "divider",
+                    pb: "env(safe-area-inset-bottom)",
+                }}
+            >
+                <BottomNavigation
+                    showLabels
+                    value={mobileBottomNavValue}
+                    onChange={(_, nextValue) => navigate(nextValue)}
+                    sx={{ height: 62 }}
+                >
+                    {mobileBottomNavItems.map((item) => (
+                        <BottomNavigationAction
+                            key={item.to}
+                            label={item.label}
+                            value={item.to}
+                            icon={item.icon}
+                            sx={{
+                                minWidth: 0,
+                                "& .MuiBottomNavigationAction-label": {
+                                    fontSize: "0.7rem",
+                                    fontWeight: 600,
+                                },
+                                ...(item.to === "/donate" && {
+                                    color: "secondary.dark",
+                                }),
+                            }}
+                        />
+                    ))}
+                </BottomNavigation>
+            </Paper>
 
             <Drawer open={mobileOpen} onClose={handleDrawerToggle} sx={{ display: { xs: "block", md: "none" } }}>
                 {drawer}
