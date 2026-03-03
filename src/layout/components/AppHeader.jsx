@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     Box,
     BottomNavigation,
@@ -36,10 +36,41 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 export default function AppHeader() {
     const [mobileOpen, setMobileOpen] = useState(false);
     const [openSubmenus, setOpenSubmenus] = useState({});
+    const [isDesktopNavSticky, setIsDesktopNavSticky] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
     const handleDrawerToggle = () => setMobileOpen((prev) => !prev);
     const toggleSubmenu = (key) => setOpenSubmenus((prev) => ({ ...prev, [key]: !prev[key] }));
+
+    useEffect(() => {
+        const desktopMediaQuery = window.matchMedia("(min-width:900px)");
+
+        const updateDesktopSticky = () => {
+            if (!desktopMediaQuery.matches) {
+                setIsDesktopNavSticky(false);
+                return;
+            }
+            setIsDesktopNavSticky(window.scrollY > 56);
+        };
+
+        updateDesktopSticky();
+        window.addEventListener("scroll", updateDesktopSticky, { passive: true });
+
+        if (desktopMediaQuery.addEventListener) {
+            desktopMediaQuery.addEventListener("change", updateDesktopSticky);
+        } else {
+            desktopMediaQuery.addListener(updateDesktopSticky);
+        }
+
+        return () => {
+            window.removeEventListener("scroll", updateDesktopSticky);
+            if (desktopMediaQuery.removeEventListener) {
+                desktopMediaQuery.removeEventListener("change", updateDesktopSticky);
+            } else {
+                desktopMediaQuery.removeListener(updateDesktopSticky);
+            }
+        };
+    }, []);
 
     const mobileBottomNavItems = [
         { label: "Home", to: "/", icon: <HomeRounded fontSize="small" /> },
@@ -249,15 +280,20 @@ export default function AppHeader() {
     });
 
     return (
-        <Box component="header" sx={{ position: "relative", bgcolor: "primary.main", pb: { xs: 2, md: 4 } }}>
+        <Box component="header" sx={{ position: "relative", pb: { xs: 0, md: 1 } }}>
             {/* Top strip */}
-            <Box sx={{ borderBottom: (t) => `1px solid ${alpha(t.palette.common.white, 0.2)}` }}>
+            <Box
+                sx={{
+                    bgcolor: "primary.main",
+                    // borderBottom: (t) => `1px solid ${alpha(t.palette.common.white, 0.2)}`,
+                }}
+            >
                 <Box
                     sx={{
                         maxWidth: (t) => t.breakpoints.values.lg,
                         mx: "auto",
                         px: { xs: 2, sm: 3, md: 4 },
-                        py: 0.45,
+                        py: { xs: 1.5   , md: 0.45 },
                     }}
                 >
                     <Box
@@ -330,7 +366,7 @@ export default function AppHeader() {
                             </Box>
                         </Box>
 
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                        <Box sx={{ display: { xs: "none", md: "flex" }, alignItems: "center", gap: 0.5 }}>
                             {[
                                 { id: "facebook", Icon: Facebook },
                                 { id: "twitter", Icon: Twitter },
@@ -358,14 +394,19 @@ export default function AppHeader() {
             <Box
                 sx={{
                     display: { xs: "none", md: "block" },
-                    position: "absolute",
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                    top: { xs: 52, md: 56 },
-                    zIndex: 20,
+                    position: isDesktopNavSticky ? "fixed" : "relative",
+                    top: isDesktopNavSticky ? 10 : "auto",
+                    left: isDesktopNavSticky ? "50%" : "auto",
+                    transform: isDesktopNavSticky ? "translateX(-50%)" : "none",
+                    zIndex: (theme) => theme.zIndex.appBar + 3,
                     width: "100%",
                     maxWidth: (t) => t.breakpoints.values.lg,
+                    boxSizing: "border-box",
+                    mx: "auto",
+                    mt: isDesktopNavSticky ? 0 : { md: 1, lg: 1.25 },
+                    mb: isDesktopNavSticky ? 0 : { md: 0.5, lg: 1 },
                     px: { xs: 2, sm: 3, md: 4 },
+                    transition: "top 180ms ease",
                 }}
             >
                 <Box
@@ -374,7 +415,9 @@ export default function AppHeader() {
                         px: { xs: 2, sm: 2.5, md: 3 },
                         py: { xs: 1.15, md: 1.35 },
                         borderRadius: 1.5,
-                        boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
+                        boxShadow: isDesktopNavSticky
+                            ? "0 10px 24px rgba(0,0,0,0.13)"
+                            : "0 8px 20px rgba(0,0,0,0.08)",
                     }}
                 >
                     <Box
@@ -440,6 +483,15 @@ export default function AppHeader() {
                     </Box>
                 </Box>
             </Box>
+
+            {isDesktopNavSticky && (
+                <Box
+                    sx={{
+                        display: { xs: "none", md: "block" },
+                        height: { md: 84, lg: 88 },
+                    }}
+                />
+            )}
 
             <Paper
                 elevation={10}
