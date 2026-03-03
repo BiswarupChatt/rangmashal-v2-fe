@@ -7,17 +7,6 @@ import AppNavigation from "./components/AppNavigation";
 export default function MainLayout() {
     const [showScrollTop, setShowScrollTop] = useState(false);
 
-    useEffect(() => {
-        const onScroll = () => setShowScrollTop(window.scrollY > 240);
-        onScroll();
-        window.addEventListener("scroll", onScroll, { passive: true });
-        return () => window.removeEventListener("scroll", onScroll);
-    }, []);
-
-    const handleScrollTop = () => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-    };
-
     return (
         <Box sx={{ minHeight: "100dvh", backgroundColor: "background.default" }}>
 
@@ -32,21 +21,6 @@ export default function MainLayout() {
                 <Outlet />
             </Box>
 
-            <Zoom in={showScrollTop}>
-                <Fab
-                    color="primary"
-                    onClick={handleScrollTop}
-                    aria-label="Scroll to top"
-                    sx={{
-                        position: "fixed",
-                        right: { xs: 16, md: 24 },
-                        bottom: { xs: 86, md: 24 },
-                        zIndex: (theme) => theme.zIndex.tooltip,
-                    }}
-                >
-                    <KeyboardArrowUp />
-                </Fab>
-            </Zoom>
         </Box>
     );
 }

@@ -54,7 +54,7 @@ export default function AppNavigation() {
 
     return (
         <Box component="header" sx={{ position: "relative", pb: { xs: 0, md: 1 } }}>
-            <TopStrip onMenuClick={handleDrawerToggle} />
+            <TopStrip onMenuClick={handleDrawerToggle} />   
 
             <DesktopFloatingNav isSticky={isDesktopNavSticky} navItems={NAV_ITEMS} />
 
