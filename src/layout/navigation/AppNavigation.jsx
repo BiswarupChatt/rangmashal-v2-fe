@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
-import DesktopFloatingNav from "./header/DesktopFloatingNav";
-import MobileBottomNavBar from "./header/MobileBottomNavBar";
-import MobileHeaderDrawer from "./header/MobileHeaderDrawer";
-import TopStrip from "./header/TopStrip";
-import { MOBILE_BOTTOM_NAV_ITEMS, NAV_ITEMS } from "./header/headerData";
+import DesktopFloatingNav from "./components/DesktopFloatingNav";
+import MobileBottomNavBar from "./components/MobileBottomNavBar";
+import MobileHeaderDrawer from "./components/MobileHeaderDrawer";
+import TopStrip from "./components/TopStrip";
+import { MOBILE_BOTTOM_NAV_ITEMS, NAV_ITEMS } from "./components/headerData";
 
 export default function AppNavigation() {
     const [mobileOpen, setMobileOpen] = useState(false);
