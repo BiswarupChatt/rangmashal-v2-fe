@@ -1,5 +1,14 @@
 import { createTheme } from "@mui/material/styles";
 
+const fluidSize = (minPx, maxPx, minViewport = 360, maxViewport = 1536) => {
+    const slope = (maxPx - minPx) / (maxViewport - minViewport);
+    const yAxisIntersection = minPx - slope * minViewport;
+
+    return `clamp(${(minPx / 16).toFixed(4)}rem, ${yAxisIntersection.toFixed(4)}px + ${(slope * 100).toFixed(
+        4
+    )}vw, ${(maxPx / 16).toFixed(4)}rem)`;
+};
+
 const theme = createTheme({
     palette: {
         mode: "light",
@@ -45,15 +54,21 @@ const theme = createTheme({
 
     typography: {
         fontFamily: "'Inter', 'Roboto', sans-serif",
-
-        h1: { fontSize: "2.5rem", fontWeight: 700 },
-        h2: { fontSize: "2rem", fontWeight: 700 },
-        h3: { fontSize: "1.75rem", fontWeight: 600 },
-        h4: { fontSize: "1.5rem", fontWeight: 600 },
-        body1: { fontSize: "1rem" },
+        h1: { fontSize: fluidSize(34, 56), fontWeight: 700, lineHeight: 1.15, letterSpacing: "-0.02em" },
+        h2: { fontSize: fluidSize(30, 46), fontWeight: 700, lineHeight: 1.2, letterSpacing: "-0.015em" },
+        h3: { fontSize: fluidSize(26, 36), fontWeight: 600, lineHeight: 1.25 },
+        h4: { fontSize: fluidSize(22, 30), fontWeight: 600, lineHeight: 1.3 },
+        h5: { fontSize: fluidSize(20, 24), fontWeight: 600, lineHeight: 1.35 },
+        h6: { fontSize: fluidSize(18, 20), fontWeight: 600, lineHeight: 1.4 },
+        subtitle1: { fontSize: fluidSize(16, 18), lineHeight: 1.55 },
+        subtitle2: { fontSize: fluidSize(14, 16), lineHeight: 1.5, fontWeight: 600 },
+        body1: { fontSize: fluidSize(15, 18), lineHeight: 1.7 },
+        body2: { fontSize: fluidSize(14, 16), lineHeight: 1.65 },
         button: {
+            fontSize: fluidSize(14, 16),
             textTransform: "none",
             fontWeight: 600,
+            letterSpacing: "0.01em",
         },
     },
 

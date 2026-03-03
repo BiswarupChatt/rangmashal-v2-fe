@@ -23,7 +23,11 @@ export default function MainLayout() {
 
             <AppHeader />
 
-            <Box sx={{ px: 13 }}>
+            <Box
+                sx={{
+                    px: { xs: 2, sm: 3, md: 6, lg: 10 },
+                }}
+            >
                 <Outlet />
             </Box>
 
