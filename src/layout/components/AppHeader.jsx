@@ -16,7 +16,6 @@ import {
     Close,
     EmailOutlined,
     Facebook,
-    HomeRounded,
     KeyboardArrowDown,
     KeyboardArrowRight,
     Menu,
@@ -74,10 +73,11 @@ export default function AppHeader() {
 
     const desktopNavButtonSx = (depth) => ({
         fontWeight: 500,
+        fontSize: depth === 0 ? "0.92rem" : "0.88rem",
         textTransform: "none",
         color: "text.primary",
-        px: depth === 0 ? 2 : 1.75,
-        py: depth === 0 ? 1 : 0.8,
+        px: depth === 0 ? { md: 1.2, lg: 1.5 } : 1.25,
+        py: depth === 0 ? 0.65 : 0.55,
         minWidth: depth === 0 ? "auto" : "100%",
         borderRadius: depth === 0 ? 0 : 1,
         justifyContent: depth === 0 ? "center" : "space-between",
@@ -132,11 +132,11 @@ export default function AppHeader() {
                             className="submenu-panel"
                             sx={{
                                 position: "absolute",
-                                minWidth: 220,
+                                minWidth: 196,
                                 bgcolor: "#fff",
-                                borderRadius: 1.5,
-                                py: 1,
-                                boxShadow: "0 16px 32px rgba(0,0,0,0.12)",
+                                borderRadius: 1.25,
+                                py: 0.5,
+                                boxShadow: "0 10px 22px rgba(0,0,0,0.12)",
                                 border: "1px solid",
                                 borderColor: "divider",
                                 zIndex: 30 + depth,
@@ -212,8 +212,8 @@ export default function AppHeader() {
     );
 
     const topIconBubbleSx = (theme) => ({
-        width: 34,
-        height: 34,
+        width: { xs: 28, md: 30 },
+        height: { xs: 28, md: 30 },
         borderRadius: "50%",
         bgcolor: alpha(theme.palette.common.white, 0.2),
         display: "grid",
@@ -221,7 +221,7 @@ export default function AppHeader() {
     });
 
     return (
-        <Box component="header" sx={{ position: "relative", bgcolor: "primary.main", pb: { xs: 3, md: 5 } }}>
+        <Box component="header" sx={{ position: "relative", bgcolor: "primary.main", pb: { xs: 2, md: 4 } }}>
             {/* Top strip */}
             <Box sx={{ borderBottom: (t) => `1px solid ${alpha(t.palette.common.white, 0.2)}` }}>
                 <Box
@@ -229,7 +229,7 @@ export default function AppHeader() {
                         maxWidth: (t) => t.breakpoints.values.lg,
                         mx: "auto",
                         px: { xs: 2, sm: 3, md: 4 },
-                        py: 0.8,
+                        py: 0.45,
                     }}
                 >
                     <Box
@@ -244,24 +244,28 @@ export default function AppHeader() {
                             sx={{
                                 display: { xs: "none", md: "flex" },
                                 alignItems: "center",
-                                gap: 3.5,
+                                gap: 2.5,
                             }}
                         >
                             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                                 <Box sx={topIconBubbleSx}>
                                     <PhoneInTalk fontSize="small" />
                                 </Box>
-                                <Typography fontWeight={600}>+00 666 000 999</Typography>
+                                <Typography variant="body2" fontWeight={500}>
+                                    +00 666 000 999
+                                </Typography>
                             </Box>
                             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                                 <Box sx={topIconBubbleSx}>
                                     <EmailOutlined fontSize="small" />
                                 </Box>
-                                <Typography fontWeight={600}>info@loveussmart.com</Typography>
+                                <Typography variant="body2" fontWeight={500}>
+                                    info@loveussmart.com
+                                </Typography>
                             </Box>
                         </Box>
 
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                             {[
                                 { id: "facebook", Icon: Facebook },
                                 { id: "twitter", Icon: Twitter },
@@ -270,6 +274,8 @@ export default function AppHeader() {
                                 <IconButton
                                     key={id}
                                     sx={{
+                                        width: 32,
+                                        height: 32,
                                         bgcolor: (t) => alpha(t.palette.common.white, 0.2),
                                         color: "#fff",
                                     }}
@@ -289,7 +295,7 @@ export default function AppHeader() {
                     position: "absolute",
                     left: "50%",
                     transform: "translateX(-50%)",
-                    top: 60,
+                    top: { xs: 52, md: 56 },
                     zIndex: 20,
                     width: "100%",
                     maxWidth: (t) => t.breakpoints.values.lg,
@@ -299,9 +305,10 @@ export default function AppHeader() {
                 <Box
                     sx={{
                         bgcolor: "#fff",
-                        px: 3,
-                        py: 2,
-                        boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
+                        px: { xs: 2, sm: 2.5, md: 3 },
+                        py: { xs: 1.15, md: 1.35 },
+                        borderRadius: 1.5,
+                        boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
                     }}
                 >
                     <Box
@@ -309,31 +316,31 @@ export default function AppHeader() {
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "space-between",
-                            gap: 2,
+                            gap: 1.5,
                         }}
                     >
                         {/* Logo */}
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                             <IconButton
-                                sx={{ display: { xs: "inline-flex", md: "none" } }}
+                                sx={{ display: { xs: "inline-flex", md: "none" }, p: 0.7 }}
                                 onClick={handleDrawerToggle}
                                 aria-label="Open menu"
                             >
-                                <Menu />
+                                <Menu fontSize="small" />
                             </IconButton>
                             <Box
                                 sx={{
-                                    width: 44,
-                                    height: 44,
+                                    width: { xs: 34, md: 38 },
+                                    height: { xs: 34, md: 38 },
                                     borderRadius: "50%",
                                     bgcolor: "primary.main",
                                     display: "grid",
                                     placeItems: "center",
                                 }}
                             >
-                                <VolunteerActivism sx={{ color: "#fff" }} />
+                                <VolunteerActivism sx={{ color: "#fff", fontSize: { xs: 18, md: 20 } }} />
                             </Box>
-                            <Typography variant="h5" fontWeight={800} letterSpacing={0.5}>
+                            <Typography variant="h6" fontWeight={700} letterSpacing={0.2}>
                                 Lifeline
                             </Typography>
                         </Box>
@@ -351,7 +358,16 @@ export default function AppHeader() {
                         {/* Donate Button */}
                         <Button
                             variant="contained"
-                            sx={{ borderRadius: 999, px: 4.5, py: 1.3, fontWeight: 700, textTransform: "none" }}
+                            sx={{
+                                display: { xs: "none", sm: "inline-flex" },
+                                borderRadius: 999,
+                                px: { sm: 2.5, md: 3.5 },
+                                py: 0.8,
+                                minHeight: 38,
+                                fontWeight: 600,
+                                fontSize: "0.9rem",
+                                textTransform: "none",
+                            }}
                         >
                             Donate Now
                         </Button>
