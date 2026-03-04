@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { Box, Fab, Zoom } from "@mui/material";
 import { KeyboardArrowUp } from "@mui/icons-material";
-import AppNavigation from "./components/AppNavigation";
+import AppNavigation from "./navigation/AppNavigation";
 
 export default function MainLayout() {
     const [showScrollTop, setShowScrollTop] = useState(false);
